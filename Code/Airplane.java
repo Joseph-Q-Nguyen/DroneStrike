@@ -51,49 +51,13 @@ public class Airplane implements Icon
 	//draws the nose of the airplane
 	public void drawNose(Graphics2D nose)
 	{
-		//bottom left corner
-		Point2D.Double r1 = new Point2D.Double(x, y + width / 3);
-
-		//top left corner
-		Point2D.Double r2 = new Point2D.Double(x, y + width / 6);
-
-		//point of the nose
-		Point2D.Double r3 = new Point2D.Double(x - (width/5), y + width/6 + 10);
-
-		//bottom part of the nose
-		Line2D.Double bottomNose = new Line2D.Double(r1, r3);
-
-		//top part of the nose
-		Line2D.Double topNose = new Line2D.Double(r2, r3);
-
-		nose.draw(topNose);
-		nose.draw(bottomNose);
+		nose.fillPolygon(new int[] {x, x, x - (width/5)}, new int[] {y + width / 3, y + width / 6, y + width/6 +10}, 3);
 	}
 
 	//draws the front wing of the airplane
 	public void drawFrontWing(Graphics2D fWing)
-	{
-		//front wing right
-		Point2D.Double r4 = new Point2D.Double(x + 80, y + width / 4);
-
-		//front wing left
-		Point2D.Double r5 = new Point2D.Double(x + 30, y + width / 4);
-
-		//front wing point
-		Point2D.Double r6 = new Point2D.Double(x + width - 15, y + width *3 / 5);
-
-		//the line on the body
-		Line2D.Double base = new Line2D.Double(r4, r5);
-
-		//the outer part of the wing
-		Line2D.Double outside = new Line2D.Double(r4, r6);
-
-		//the inner part of the wing
-		Line2D.Double inside = new Line2D.Double(r5, r6);
-
-		fWing.draw(base);
-		fWing.draw(inside);
-		fWing.draw(outside);
+	{	
+		fWing.fillPolygon(new int[] {x + 80, x + 30, x + width - 15}, new int[] {y + width / 4, y + width / 4, y + width * 3 / 5},  3);
 	}
 
 	//draws the back wing of the airplane
@@ -101,28 +65,7 @@ public class Airplane implements Icon
 	//airplane with a more "3-D"-ish effect or give it some depth perception
 	public void drawBackWing(Graphics2D bWing)
 	{
-		//back wing right
-		Point2D.Double r7 = new Point2D.Double(x + 95, y + width / 5);
-
-		//back wing left
-		Point2D.Double r8 = new Point2D.Double(x + 45 , y + width / 5);
-
-		//back wing point
-		Point2D.Double r9 = new Point2D.Double(x - 12 + width , y - 10);
-
-		//the line on the body
-		Line2D.Double base = new Line2D.Double(r7, r8);
-
-		//outside edge of the back wing
-		Line2D.Double outside = new Line2D.Double(r7, r9);
-
-		//inside edge of the back wing
-		Line2D.Double inside = new Line2D.Double(r8, r9);
-
-		bWing.draw(base);
-		bWing.draw(outside);
-		bWing.draw(inside);
-
+		bWing.fillPolygon(new int[] {x + 95, x + 45, x - 12 + width}, new int[] {y + width / 5, y + width / 5, y - 10}, 3);
 	}
 
 	//draws the airplane
@@ -130,8 +73,9 @@ public class Airplane implements Icon
 	{
 		//body of the plane
 		Rectangle2D.Double body = new Rectangle2D.Double(x, y + width / 6, width - 1, height);
-
+		
 		g2.draw(body);
+		g2.fill(body);
 		drawNose(g2);
 		drawFrontWing(g2);
 		drawBackWing(g2);
