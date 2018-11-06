@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -51,12 +52,19 @@ public class Airplane implements Icon
 	//draws the nose of the airplane
 	public void drawNose(Graphics2D nose)
 	{
+		
+		nose.setColor(Color.BLACK); // first drawing the polygon and then filling it gives an outline affect
+		nose.drawPolygon(new int[] {x, x, x - (width/5)}, new int[] {y + width / 3, y + width / 6, y + width/6 +10}, 3);
+		nose.setColor(Color.WHITE);
 		nose.fillPolygon(new int[] {x, x, x - (width/5)}, new int[] {y + width / 3, y + width / 6, y + width/6 +10}, 3);
 	}
 
 	//draws the front wing of the airplane
 	public void drawFrontWing(Graphics2D fWing)
 	{	
+		fWing.setColor(Color.BLACK);
+		fWing.drawPolygon(new int[] {x + 80, x + 30, x + width - 15}, new int[] {y + width / 4, y + width / 4, y + width * 3 / 5},  3);
+		fWing.setColor(Color.WHITE);
 		fWing.fillPolygon(new int[] {x + 80, x + 30, x + width - 15}, new int[] {y + width / 4, y + width / 4, y + width * 3 / 5},  3);
 	}
 
@@ -65,6 +73,9 @@ public class Airplane implements Icon
 	//airplane with a more "3-D"-ish effect or give it some depth perception
 	public void drawBackWing(Graphics2D bWing)
 	{
+		bWing.setColor(Color.BLACK);
+		bWing.drawPolygon(new int[] {x + 95, x + 45, x - 12 + width}, new int[] {y + width / 5, y + width / 5, y - 10}, 3);
+		bWing.setColor(Color.WHITE);
 		bWing.fillPolygon(new int[] {x + 95, x + 45, x - 12 + width}, new int[] {y + width / 5, y + width / 5, y - 10}, 3);
 	}
 
@@ -74,15 +85,14 @@ public class Airplane implements Icon
 		//body of the plane
 		Rectangle2D.Double body = new Rectangle2D.Double(x, y + width / 6, width - 1, height);
 		
-		g2.draw(body);
+		drawBackWing(g2); // draw the back wing first
+		g2.setColor(Color.BLACK);
+		g2.drawRect(x, y + width / 6 - 1, width - 1, height + 1); // outline rectangle
+		g2.setColor(Color.WHITE);
 		g2.fill(body);
 		drawNose(g2);
 		drawFrontWing(g2);
-		drawBackWing(g2);
-
 	}
-
-	
 	@Override
 	public int getIconHeight() 
 	{
