@@ -5,9 +5,11 @@ import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Random;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
+import javax.swing.Timer;
 
 public class Airplane implements Icon
 {
@@ -15,7 +17,8 @@ public class Airplane implements Icon
 	private int y;
 	private int width;
 	private int height;
-	
+	private Random r;
+	private boolean hit;
 	
 	/**
     Constructs a car item.
@@ -29,6 +32,25 @@ public class Airplane implements Icon
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.hit = false;
+		r = new Random();
+		
+		int delay = 10;
+		Timer t = new Timer(delay, event -> {
+			move();
+			if(this.getX() <= -250)
+			{
+				reset();
+			}
+			
+		});
+		t.start();
+		
+		if(hit)
+		{
+			reset();
+		}
+		
 	}
 
 	public void move()
@@ -36,11 +58,21 @@ public class Airplane implements Icon
 		x--;
 	}
 
+	public void setHit()
+	{
+		hit = true;
+	}
+	
+	public boolean getHit()
+	{
+		return hit;
+	}
+	
 	//resets the position of the airplane back to the left hand side
 	public void reset()
 	{
-		x = 425;
-		y = 0;
+		x = 1000;
+		y = r.nextInt(400);
 	}
 
 	//gets the x position of the airplane
@@ -49,6 +81,11 @@ public class Airplane implements Icon
 		return x;
 	}
 
+	public int getY()
+	{
+		return y;
+	}
+	
 	//draws the nose of the airplane
 	public void drawNose(Graphics2D nose)
 	{
@@ -63,7 +100,7 @@ public class Airplane implements Icon
 	public void drawFrontWing(Graphics2D fWing)
 	{	
 		fWing.setColor(Color.BLACK);
-		fWing.drawPolygon(new int[] {x + 80, x + 30, x + width - 15}, new int[] {y + width / 4, y + width / 4, y + width * 3 / 5},  3);
+		fWing.drawPolygon(new int[] {x + 82, x + 28, x + width - 15}, new int[] {y + width / 4, y + width / 4, y + width * 3 / 5},  3);
 		fWing.setColor(Color.WHITE);
 		fWing.fillPolygon(new int[] {x + 80, x + 30, x + width - 15}, new int[] {y + width / 4, y + width / 4, y + width * 3 / 5},  3);
 	}
@@ -74,7 +111,7 @@ public class Airplane implements Icon
 	public void drawBackWing(Graphics2D bWing)
 	{
 		bWing.setColor(Color.BLACK);
-		bWing.drawPolygon(new int[] {x + 95, x + 45, x - 12 + width}, new int[] {y + width / 5, y + width / 5, y - 10}, 3);
+		bWing.drawPolygon(new int[] {x + 95, x + 43, x - 12 + width}, new int[] {y + width / 5, y + width / 5, y - 10}, 3);
 		bWing.setColor(Color.WHITE);
 		bWing.fillPolygon(new int[] {x + 95, x + 45, x - 12 + width}, new int[] {y + width / 5, y + width / 5, y - 10}, 3);
 	}
