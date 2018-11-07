@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -20,6 +21,7 @@ public class Drone implements Icon
 	private int width;
 	private int height;
 	private BufferedImage image;
+	private boolean collison;
 	
 	
 	/**
@@ -34,26 +36,30 @@ public class Drone implements Icon
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.collison = false;
 		image = ImageIO.read(new File("Files/drone2.png"));
+		
+		
 		
 	}
 
-	public void move()
-	{
-		x--;
-	}
+	
 
-	//resets the position of the airplane back to the left hand side
+	//resets the position of the drone back to its starting position
 	public void reset()
 	{
-		x = 425;
-		y = 0;
+		x = 100;
+		y = 250;
 	}
 
-	//gets the x position of the airplane
-	public int getX()
+	public void moveUp()
 	{
-		return x;
+		y--;
+	}
+	
+	public void moveDown()
+	{
+		y++;
 	}
 
 	@Override
@@ -78,5 +84,14 @@ public class Drone implements Icon
 	
 	}
 	
+	public void setCollison()
+	{
+		collison = true;
+	}
+	
+	public boolean getCollison()
+	{
+		return collison;
+	}
 	
 }
