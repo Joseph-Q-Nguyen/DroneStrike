@@ -4,7 +4,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,26 +17,18 @@ import javax.swing.Timer;
 // Joseph
 public class MovingPlain extends JPanel {
 	private Ellipse2D cloud1, cloud2, cloud3;
+	private BufferedImage sky, skyFlipped;
+	private int skyX, skyFX; 		// x coordinates of pictures
 	
-	public static void main(String [] args) {
-		JFrame screen = new JFrame("Drone Strike");
-		MovingPlain m = new MovingPlain();
-		screen.add(m);
-		
-		
-		screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		screen.setSize(DroneGame.GAME_WIDTH , DroneGame.GAME_HEIGHT);
-		screen.setVisible(true);
-	}
-	
-	public MovingPlain() {
+	public MovingPlain() throws IOException {
 		cloud1 = new Ellipse2D.Double(DroneGame.GAME_WIDTH - 100, 0, 55, 20);
 		cloud2 = new Ellipse2D.Double(DroneGame.GAME_WIDTH - 100, 100, 70, 30);
 		cloud3 = new Ellipse2D.Double(DroneGame.GAME_WIDTH - 100, 400, 100, 20);
-//		Airplane f15 = new Airplane(500, 250, 150, 25);
-//		JLabel plane = new JLabel(f15);
-//		this.add(plane);
-		
+		sky = ImageIO.read(new File("pics\\SimpleSky2.png"));
+		skyX = 0;
+		skyFlipped = ImageIO.read(new File("pics\\SimpleSky2_flipped.png"));
+		skyFX = 1000;
+	
 		int delay = 10;
 		Timer t = new Timer(delay, event -> {
 			move();
@@ -42,7 +38,7 @@ public class MovingPlain extends JPanel {
 	}
 	
 	public void move() {
-		if (cloud1.getX() <= - cloud1.getWidth())
+		if (cloud1.getX() <= - cloud1.getWidth()) // if clouds get off frame, put them back on the right
 			cloud1 = new Ellipse2D.Double(DroneGame.GAME_WIDTH, 0, 55, 20);
 		else
 			cloud1 = new Ellipse2D.Double(cloud1.getX() - 1, 0, 55, 20);
@@ -56,14 +52,21 @@ public class MovingPlain extends JPanel {
 			cloud3 = new Ellipse2D.Double(DroneGame.GAME_WIDTH, 400, 100, 20);
 		else
 			cloud3 = new Ellipse2D.Double(cloud3.getX() - 3, 400, 100, 20);
+		if (skyX <= -1000)  // if the pictures move out of frame, put them back on the right
+			skyX = 1000;
+		else
+			skyX--;
+		if (skyFX <= -1000)
+			skyFX = 1000;
+		else
+			skyFX--;	
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-		Rectangle2D.Double r = new Rectangle2D.Double(0, 0, DroneGame.GAME_WIDTH, DroneGame.GAME_HEIGHT);
-		g2.setColor(Color.CYAN);
-		g2.fill(r);
+		g2.drawImage(sky, null, skyX, 0);
+		g2.drawImage(skyFlipped, null, skyFX, 0);
 		g2.setColor(Color.WHITE);
 		g2.fill(cloud1);
 		g2.fill(cloud2);
