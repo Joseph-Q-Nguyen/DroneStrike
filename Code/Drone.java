@@ -1,97 +1,90 @@
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.awt.event.KeyListener;
 
-import javax.imageio.ImageIO;
-import javax.swing.Icon;
-import javax.swing.JLabel;
-
-public class Drone implements Icon
+public class Drone extends JLabel implements KeyListener 
 {
-	private int x;
-	private int y;
-	private int width;
-	private int height;
-	private BufferedImage image;
-	private boolean collison;
-	
-	
-	/**
-    Constructs a car item.
-    @param x the left of the bounding rectangle
-    @param y the top of the bounding rectangle
-    @param width the width of the bounding rectangle
-	 */
-	public Drone(int x, int y, int width, int height) throws IOException
-	{
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.collison = false;
-		image = ImageIO.read(new File("Files/drone2.png"));
-		
-		
-		
-	}
+    
+    private Image image;
+    private int x, y;
+    
+    public Drone(int x, int y) 
+    {
+    	this.x = x;
+    	this.y = y;
+    	
+    	ImageIcon i = new ImageIcon("Files/drone2.png");
+    	image = i.getImage();
+        this.setPreferredSize(new Dimension(100, 80));
+       
+        addKeyListener(this);
+    }
 
-	
+    public void addNotify() 
+    {
+        super.addNotify();
+        requestFocus();
+    }
 
-	//resets the position of the drone back to its starting position
-	public void reset()
-	{
-		x = 100;
-		y = 250;
-	}
+    public void paintComponent(Graphics g) 
+    {
+    	g.drawImage(image, x, y, null);
+    }
 
-	public void moveUp()
-	{
-		y--;
-	}
-	
-	public void moveDown()
-	{
-		y++;
-	}
+    public void keyPressed(KeyEvent e) 
+    { 
+    	if(e.getKeyCode() == KeyEvent.VK_UP)
+        {
+        	changeY(-5);
+        	repaint();
+        }
+        if(e.getKeyCode() == KeyEvent.VK_DOWN)
+        {
+        	changeY(5);
+        	repaint();
+        }
+        if(e.getKeyCode() == KeyEvent.VK_RIGHT)
+        {
+        	changeX(5);
+        	repaint();
+        }
+        if(e.getKeyCode() == KeyEvent.VK_LEFT)
+        {
+        	changeX(-5);
+        	repaint();
+        }
+        
+    }
+    
+    public void keyReleased(KeyEvent e) 
+    { 
+    	
+    }
+    
+    public void keyTyped(KeyEvent e) 
+    {
+    	
+    }
 
-	@Override
-	public int getIconHeight() 
-	{
-		// TODO Auto-generated method stub
-		return height;
-	}
-
-	@Override
-	public int getIconWidth() 
-	{
-		// TODO Auto-generated method stub
-		return width;
-	}
-
-	@Override
-	public void paintIcon(Component c, Graphics g, int i, int j) 
-	{
-		Graphics2D g2 = (Graphics2D) g;
-		g2.drawImage(image, null, 100, 50);
-	
-	}
-	
-	public void setCollison()
-	{
-		collison = true;
-	}
-	
-	public boolean getCollison()
-	{
-		return collison;
-	}
-	
+    public int getY()
+    {
+    	return y;
+    }
+    
+    public int getX()
+    {
+    	return x;
+    }
+    
+    public void changeX(int lateral)
+    {
+    	x += lateral;
+    }
+    
+    public void changeY(int vertical)
+    {
+    	y += vertical;
+    }
+    
 }
