@@ -13,6 +13,8 @@ public class DroneGame //implements KeyListener
 	public final static int GAME_HEIGHT = 500;
 	private Random r;
 	private int x;
+	private static Drone drone;
+	private static Airplane f15;
 	
 	public DroneGame() throws IOException
 	{
@@ -20,28 +22,42 @@ public class DroneGame //implements KeyListener
 		MovingPlain plainBackground = new MovingPlain();
 		r = new Random();
 		
-		Airplane f15 = new Airplane(750, r.nextInt(450), 150, 25);
+		f15 = new Airplane(850, r.nextInt(450), 150, 25);
 		JLabel airplane = new JLabel(f15);
 		Airplane tomcat = new Airplane(800, r.nextInt(450), 150, 25);
 		JLabel airplane2 = new JLabel(tomcat);
 		
-		Drone drone = new Drone(100, 250);
+		drone = new Drone(50, 150);
 		
 		screen.add(plainBackground);
-		//screen.getContentPane().add(tracer);
+		
 		
 		plainBackground.add(drone);
 		plainBackground.add(airplane);
-		plainBackground.add(airplane2);
-				
+		//plainBackground.add(airplane2);
+		
+
 		screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		screen.setSize(GAME_WIDTH , GAME_HEIGHT);
 		screen.setVisible(true);
 	}
 	
+	
+	public static void detection()
+	{
+		System.out.print("X:" + drone.getX() + " ");
+		System.out.println("Y: " + drone.getY());
+	}
+	
 	public static void main(String[] args) throws IOException
 	{
 		DroneGame MegaDimensionNeptuniaVII = new DroneGame();
+		//System.out.println(drone.getWidth());
+		while(true)
+		{
+			//detection();
+			
+		}
 	}
 
 }
