@@ -73,7 +73,7 @@ public class MovingPlain extends JPanel {
 		g2.fill(cloud3);
 		for (Component c : getComponents())
 		{
-			if(c.getClass() != Time.class && c.getClass() != Scores.class)
+			if(c.getClass() != Time.class && c.getClass() != Scores.class && c.getClass() != Lives.class)
 				c.paint(g2);
 		}
 	}

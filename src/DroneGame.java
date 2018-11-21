@@ -3,6 +3,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
 import javax.swing.*;
 
 
@@ -15,13 +17,14 @@ public class DroneGame //implements KeyListener
 	private int x;
 	private static Drone drone;
 	private static Airplane f15;
-	public int collisionCount = 0;
+	public int colCount = 3;
 	
-	public DroneGame() throws IOException
+	public DroneGame() throws IOException, InterruptedException
 	{
 		JFrame screen = new JFrame("Drone Strike");
 		MovingPlain plainBackground = new MovingPlain();
 		r = new Random();
+		Lives lives = new Lives();
 		
 		f15 = new Airplane(850, r.nextInt(450), 150, 25);
 		JLabel airplane = new JLabel(f15);
@@ -36,7 +39,10 @@ public class DroneGame //implements KeyListener
 		
 		screen.add(plainBackground);
 		
-		time.setBounds(500, 400, 75, 75);
+		
+		time.setBounds(500, 390, 75, 75);
+		lives.setBounds(470, 390, 150, 150);
+		plainBackground.add(lives);
 		plainBackground.add(time);
 		plainBackground.add(score);
 		plainBackground.add(drone);
@@ -49,7 +55,7 @@ public class DroneGame //implements KeyListener
 		screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		screen.setSize(GAME_WIDTH , GAME_HEIGHT);
 		screen.setVisible(true);
-
+		
 		while(screen.isVisible()) {
 			System.out.println(isOverlapping());
 		}
@@ -78,7 +84,7 @@ public class DroneGame //implements KeyListener
 		System.out.println("Y: " + drone.getY());
 	}
 	
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException, InterruptedException
 	{
 		DroneGame MegaDimensionNeptuniaVII = new DroneGame();
 		//System.out.println(drone.getWidth());

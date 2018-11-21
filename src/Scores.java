@@ -32,6 +32,6 @@ public class Scores extends JLabel {
 	{
 		label.setText("Score: 0 out of 1");
 		timer.scheduleAtFixedRate(task, 1000, 1000);
-		this.setBounds(485, 380, 150, 150);
+		this.setBounds(485, 370, 150, 150);
 	}
 }
