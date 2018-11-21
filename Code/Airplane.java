@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -11,10 +12,10 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.Timer;
 
-public class Airplane implements Icon
+public class Airplane extends JLabel implements Icon
 {
-	private int x;
-	private int y;
+	private int x, xd;
+	private int y, yd;
 	private int width;
 	private int height;
 	private Random r;
@@ -33,7 +34,12 @@ public class Airplane implements Icon
 		this.width = width;
 		this.height = height;
 		this.hit = false;
+		xd = this.x + this.width;
+		yd = this.y + this.height;
+		
 		r = new Random();
+		
+		this.setBounds(new Rectangle(x, y, width, height));
 		
 		int delay = 10;
 		Timer t = new Timer(delay, event -> {
@@ -56,6 +62,7 @@ public class Airplane implements Icon
 	public void move()
 	{
 		x--;
+		xd--;
 	}
 
 	public void setHit()
@@ -78,30 +85,40 @@ public class Airplane implements Icon
 	//gets the x position of the airplane
 	public int getX()
 	{
-		return x;
+		return x-35;
 	}
 
 	public int getY()
 	{
-		return y;
+		return y-10;
+	}
+	
+	public int getXD()
+	{
+		return xd+50;
+	}
+	
+	public int getYD()
+	{
+		return yd+850;
 	}
 	
 	//draws the nose of the airplane
 	public void drawNose(Graphics2D nose)
 	{
 		
-		nose.setColor(Color.BLACK); // first drawing the polygon and then filling it gives an outline affect
-		nose.drawPolygon(new int[] {x, x, x - (width/5)}, new int[] {y + width / 3, y + width / 6, y + width/6 +10}, 3);
-		nose.setColor(Color.WHITE);
+		nose.setColor(Color.RED); // first drawing the polygon and then filling it gives an outline affect
+		nose.drawPolygon(new int[] {x, x, x - (width/5)-1}, new int[] {y + width / 3, y + width / 6 -1, y + width/6 +10}, 3);
+		nose.setColor(Color.DARK_GRAY);
 		nose.fillPolygon(new int[] {x, x, x - (width/5)}, new int[] {y + width / 3, y + width / 6, y + width/6 +10}, 3);
 	}
 
 	//draws the front wing of the airplane
 	public void drawFrontWing(Graphics2D fWing)
 	{	
-		fWing.setColor(Color.BLACK);
+		fWing.setColor(Color.RED);
 		fWing.drawPolygon(new int[] {x + 82, x + 28, x + width - 15}, new int[] {y + width / 4, y + width / 4, y + width * 3 / 5},  3);
-		fWing.setColor(Color.WHITE);
+		fWing.setColor(Color.DARK_GRAY);
 		fWing.fillPolygon(new int[] {x + 80, x + 30, x + width - 15}, new int[] {y + width / 4, y + width / 4, y + width * 3 / 5},  3);
 	}
 
@@ -110,9 +127,9 @@ public class Airplane implements Icon
 	//airplane with a more "3-D"-ish effect or give it some depth perception
 	public void drawBackWing(Graphics2D bWing)
 	{
-		bWing.setColor(Color.BLACK);
+		bWing.setColor(Color.RED);
 		bWing.drawPolygon(new int[] {x + 95, x + 43, x - 12 + width}, new int[] {y + width / 5, y + width / 5, y - 10}, 3);
-		bWing.setColor(Color.WHITE);
+		bWing.setColor(Color.DARK_GRAY);
 		bWing.fillPolygon(new int[] {x + 95, x + 45, x - 12 + width}, new int[] {y + width / 5, y + width / 5, y - 10}, 3);
 	}
 
@@ -120,27 +137,31 @@ public class Airplane implements Icon
 	public void draw(Graphics2D g2)
 	{
 		//body of the plane
-		Rectangle2D.Double body = new Rectangle2D.Double(x, y + width / 6, width - 1, height);
+		Rectangle2D.Double body = new Rectangle2D.Double(x, y + width / 6, width-1, height);
 		
 		drawBackWing(g2); // draw the back wing first
-		g2.setColor(Color.BLACK);
+		g2.setColor(Color.RED);
 		g2.drawRect(x, y + width / 6 - 1, width - 1, height + 1); // outline rectangle
-		g2.setColor(Color.WHITE);
+		g2.setColor(Color.DARK_GRAY);
 		g2.fill(body);
 		drawNose(g2);
 		drawFrontWing(g2);
+		
+		Rectangle2D.Double bounding = new Rectangle2D.Double(x-35, y-10, width+50, height+80);
+		g2.draw(bounding);
 	}
+	
 	@Override
 	public int getIconHeight() 
 	{
-		// TODO Auto-generated method stub
+		
 		return height;
 	}
 
 	@Override
 	public int getIconWidth() 
 	{
-		// TODO Auto-generated method stub
+		
 		return width;
 	}
 
