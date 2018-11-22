@@ -12,7 +12,7 @@ import javax.swing.*;
 public class DroneGame //implements KeyListener
 {
 	public final static int GAME_WIDTH = 1000;
-	public final static int GAME_HEIGHT = 500;
+	public final static int GAME_HEIGHT = 525;
 	private Random r;
 	private int x;
 	private static Drone drone;
