@@ -1,63 +1,178 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.util.Random;
-import javax.swing.*;
 
-
-// Joseph's note: anything added to be displayed on screen must be added to the Moving Plain
-public class DroneGame //implements KeyListener
+public class Drone extends JLabel implements KeyListener 
 {
-	public final static int GAME_WIDTH = 1000;
-	public final static int GAME_HEIGHT = 500;
-	private Random r;
-	private int x;
-	private static Drone drone;
-	private static Airplane f15;
-	
-	public DroneGame() throws IOException
-	{
-		JFrame screen = new JFrame("Drone Strike");
-		MovingPlain plainBackground = new MovingPlain();
-		r = new Random();
-		
-		f15 = new Airplane(850, r.nextInt(450), 150, 25);
-		JLabel airplane = new JLabel(f15);
-		Airplane tomcat = new Airplane(800, r.nextInt(450), 150, 25);
-		JLabel airplane2 = new JLabel(tomcat);
-		
-		drone = new Drone(50, 150);
-		
-		screen.add(plainBackground);
-		
-		
-		plainBackground.add(drone);
-		plainBackground.add(airplane);
-		//plainBackground.add(airplane2);
-		
+	private Image image;
+	private int x, y, width, height;
+	private Timer tUp, tDown, tRight, tLeft;
 
-		screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		screen.setSize(GAME_WIDTH , GAME_HEIGHT);
-		screen.setVisible(true);
-	}
-	
-	
-	public static void detection()
+	public Drone(int x, int y) 
 	{
-		System.out.print("X:" + drone.getX() + " ");
-		System.out.println("Y: " + drone.getY());
-	}
-	
-	public static void main(String[] args) throws IOException
-	{
-		DroneGame MegaDimensionNeptuniaVII = new DroneGame();
-		//System.out.println(drone.getWidth());
-		while(true)
-		{
-			//detection();
+		this.x = y;
+		this.x = y;
+
+		ImageIcon i = new ImageIcon("Files\\drone2.png");
+		image = i.getImage();
+		this.setPreferredSize(new Dimension(1, 1));
+//		this.setBounds(0, 0, 0, 0);
+
+		this.width = image.getWidth(this);
+		this.height = image.getHeight(this);
+		
+		addKeyListener(this);
+
+		int delay = 10;
+		tUp = new Timer(delay, event -> {
+			changeY(-10);
 			
+        	
+			repaint();
+		});
+		tDown = new Timer(delay, event -> {
+			changeY(10);
+			repaint();
+		});
+		tRight = new Timer(delay, event -> {
+			changeX(10);
+			repaint();
+		});
+		tLeft = new Timer(delay, event -> {
+			changeX(-10);
+			repaint();
+		});
+	}
+	
+
+	public void addNotify() 
+	{
+		super.addNotify();
+		requestFocus();
+	}
+
+	public void paintComponent(Graphics g) 
+	{
+	//	Graphics2D g2 = (Graphics2D)g;
+		((Graphics2D)g).drawImage(image, x, y, width, height, this);
+		
+		//g.drawImage(image, x, y, width, height, this);
+	}
+
+	public void keyPressed(KeyEvent e) 
+	{ 
+		if (e.getKeyCode() == KeyEvent.VK_UP)
+		{
+			
+			if(y <= 0)
+        	{
+        		y = 0;
+        		
+        	}
+			else
+			{
+				tUp.start();
+			}
+        	
+		}
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+		{
+			
+			if(y >= 375)
+        	{
+        		y = 375;
+        	}
+			else
+			{
+				tDown.start();
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+		{
+			
+			if(x >= 875)
+        	{
+        		x = 875;
+        	}
+			else
+			{
+				tRight.start();
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+		{
+			
+			if(x <= 0)
+        	{
+        		x = 0;
+        	}
+			else
+			{
+				tLeft.start();
+			}
+		}
+
+	}
+
+	public void keyReleased(KeyEvent e) 
+	{ 
+		if (e.getKeyCode() == KeyEvent.VK_UP)
+		{
+			tUp.stop();
+		}
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+		{
+			tDown.stop();
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+		{
+			tRight.stop();
+		}
+		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+		{
+			tLeft.stop();
 		}
 	}
 
+	public void keyTyped(KeyEvent e) 
+	{
+
+	}
+
+	public int getX()
+	{
+		return x;
+	}
+
+	public int getY()
+	{
+		return y;
+	}
+
+	public void reset()
+	{
+		x = 50;
+		y = 250;
+	}
+	
+	public void changeX(int lateral)
+	{
+		x += lateral;
+		if(x == 0)
+		{
+			x = 0;
+		}
+	}
+
+	public void changeY(int vertical)
+	{
+		y += vertical;
+	}
+
+	public boolean checkBounds()
+	{
+		return true;
+	}
+	
 }
