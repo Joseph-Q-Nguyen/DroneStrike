@@ -1,178 +1,107 @@
-import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
-public class Drone extends JLabel implements KeyListener 
+import javax.swing.*;
+
+
+// Joseph's note: anything added to be displayed on screen must be added to the Moving Plain
+public class DroneGame 
 {
-	private Image image;
-	private int x, y, width, height;
-	private Timer tUp, tDown, tRight, tLeft;
-
-	public Drone(int x, int y) 
+	public final static int GAME_WIDTH = 1000;
+	public final static int GAME_HEIGHT = 525;
+	private Random r;
+	private int x;
+	private static Drone drone;
+	private static Airplane f15;
+	public int colCount = 3;
+	
+	public DroneGame() throws IOException, InterruptedException
 	{
-		this.x = y;
-		this.x = y;
-
-		ImageIcon i = new ImageIcon("Files\\drone2.png");
-		image = i.getImage();
-		this.setPreferredSize(new Dimension(1, 1));
-//		this.setBounds(0, 0, 0, 0);
-
-		this.width = image.getWidth(this);
-		this.height = image.getHeight(this);
+		JFrame screen = new JFrame("Drone Strike");
+		MovingPlain plainBackground = new MovingPlain();
+		r = new Random();
+		Lives lives = new Lives();
 		
-		addKeyListener(this);
-
-		int delay = 10;
-		tUp = new Timer(delay, event -> {
-			changeY(-10);
-			
-        	
-			repaint();
-		});
-		tDown = new Timer(delay, event -> {
-			changeY(10);
-			repaint();
-		});
-		tRight = new Timer(delay, event -> {
-			changeX(10);
-			repaint();
-		});
-		tLeft = new Timer(delay, event -> {
-			changeX(-10);
-			repaint();
-		});
-	}
-	
-
-	public void addNotify() 
-	{
-		super.addNotify();
-		requestFocus();
-	}
-
-	public void paintComponent(Graphics g) 
-	{
-	//	Graphics2D g2 = (Graphics2D)g;
-		((Graphics2D)g).drawImage(image, x, y, width, height, this);
+		f15 = new Airplane(850, r.nextInt(450), 150, 25);
+		JLabel airplane = new JLabel(f15);
+		airplane.setBounds(850, r.nextInt(450), 150, 25);
+		//Airplane tomcat = new Airplane(800, r.nextInt(450), 150, 25);
+		//JLabel airplane2 = new JLabel(tomcat);
+		//airplane2.setBounds(850, r.nextInt(450), 150, 25);
+		Time time = new Time();
+		Scores score = new Scores();
 		
-		//g.drawImage(image, x, y, width, height, this);
-	}
+		drone = new Drone(50, 150);
+		
+		screen.add(plainBackground);
+		
+		
+		time.setBounds(500, 390, 75, 75);
+		lives.setBounds(470, 390, 150, 150);
+		plainBackground.add(lives);
+		plainBackground.add(time);
+		plainBackground.add(score);
+		plainBackground.add(drone);
+		plainBackground.add(airplane);
+		//plainBackground.setLayout(null);
+		//plainBackground.add(airplane2);
+		
+		
 
-	public void keyPressed(KeyEvent e) 
-	{ 
-		if (e.getKeyCode() == KeyEvent.VK_UP)
+		screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		screen.setSize(GAME_WIDTH , GAME_HEIGHT);
+		screen.setVisible(true);
+		
+		while(screen.isVisible()) 
 		{
-			
-			if(y <= 0)
-        	{
-        		y = 0;
-        		
-        	}
-			else
+			System.out.println("");
+			if(isOverlapping())
 			{
-				tUp.start();
+				lives.lost();
+				drone.reset();
+				f15.reset();
 			}
-        	
-		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN)
-		{
-			
-			if(y >= 375)
-        	{
-        		y = 375;
-        	}
-			else
+			if(lives.getLives() == 0)
 			{
-				tDown.start();
+				lives.getALife();
+				score.gameOver();
 			}
-		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-		{
 			
-			if(x >= 875)
-        	{
-        		x = 875;
-        	}
-			else
-			{
-				tRight.start();
-			}
 		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT)
-		{
-			
-			if(x <= 0)
-        	{
-        		x = 0;
-        	}
-			else
-			{
-				tLeft.start();
-			}
-		}
-
-	}
-
-	public void keyReleased(KeyEvent e) 
-	{ 
-		if (e.getKeyCode() == KeyEvent.VK_UP)
-		{
-			tUp.stop();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN)
-		{
-			tDown.stop();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-		{
-			tRight.stop();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT)
-		{
-			tLeft.stop();
-		}
-	}
-
-	public void keyTyped(KeyEvent e) 
-	{
-
-	}
-
-	public int getX()
-	{
-		return x;
-	}
-
-	public int getY()
-	{
-		return y;
-	}
-
-	public void reset()
-	{
-		x = 50;
-		y = 250;
 	}
 	
-	public void changeX(int lateral)
-	{
-		x += lateral;
-		if(x == 0)
-		{
-			x = 0;
-		}
+	public boolean isOverlapping() {
+		//bottom of plane
+	    if (f15.getY()+20 < drone.getY()-drone.getHeight()
+	      || f15.getY()-f15.getIconHeight()-50 > drone.getY()) {
+	    	//top of plane
+	        return false;
+	    }
+	    //back of plane
+	    if (f15.getX()+f15.getIconWidth()-50 < drone.getX()-drone.getHeight() 
+	      || f15.getX()-f15.getIconHeight() > drone.getX()+drone.getWidth()) {
+	        return false;
+	    }
+	    return true;
 	}
 
-	public void changeY(int vertical)
+	
+	
+	public static void detection()
 	{
-		y += vertical;
-	}
-
-	public boolean checkBounds()
-	{
-		return true;
+		System.out.print("X:" + drone.getX() + " ");
+		System.out.println("Y: " + drone.getY());
 	}
 	
+	public static void main(String[] args) throws IOException, InterruptedException
+	{
+		DroneGame MegaDimensionNeptuniaVII = new DroneGame();
+		//System.out.println(drone.getWidth());
+	}
+
 }
