@@ -9,11 +9,14 @@ public class Scores extends JLabel {
 	
 	int seconds = 0;
 	int gamesWon = 0;
-	int gamesPlayed = 1;
+	int gamesPlayed = 0;
+	boolean winner = false;
 	
 	Timer timer = new Timer();
 	TimerTask task = new TimerTask() {
-		public void run() {
+		public void run() 
+		{
+			winner = false;
 			if(seconds < 90)
 				seconds++;
 			else
@@ -22,6 +25,7 @@ public class Scores extends JLabel {
 				gamesWon++;
 				gamesPlayed++;
 				label.setText("Score: " + Integer.toString(gamesWon) + " out of " + Integer.toString(gamesPlayed));
+				winner = true;
 			}
 			
 			
@@ -30,8 +34,18 @@ public class Scores extends JLabel {
 	
 	public Scores()
 	{
-		label.setText("Score: 0 out of 1");
+		label.setText("Score: " + gamesWon + " out of " + gamesPlayed);
 		timer.scheduleAtFixedRate(task, 1000, 1000);
 		this.setBounds(485, 370, 150, 150);
 	}
-}
+	
+	public boolean getWinner()
+	{
+		return winner;
+	}
+	
+	public void gameOver()
+	{
+		gamesPlayed++;
+		label.setText("Score: " + gamesWon + " out of " + gamesPlayed);
+	}
