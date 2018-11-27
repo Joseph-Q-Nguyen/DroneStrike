@@ -24,6 +24,7 @@ public class Scores extends JLabel {
 				seconds = 0;
 				gamesWon++;
 				gamesPlayed++;
+				
 				label.setText("Score: " + Integer.toString(gamesWon) + " out of " + Integer.toString(gamesPlayed));
 				winner = true;
 			}
@@ -39,6 +40,11 @@ public class Scores extends JLabel {
 		this.setBounds(485, 370, 150, 150);
 	}
 	
+	public void reset()
+	{		
+		
+	}
+	
 	public boolean getWinner()
 	{
 		return winner;
@@ -49,3 +55,4 @@ public class Scores extends JLabel {
 		gamesPlayed++;
 		label.setText("Score: " + gamesWon + " out of " + gamesPlayed);
 	}
+}
