@@ -1,45 +1,55 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class Drone extends JLabel implements KeyListener 
 {
-	private Image image;
+	private BufferedImage image;
 	private int droneX, droneY;
+	private int width, height;
+	public Rectangle bounding;
 	private Timer tUp, tDown, tRight, tLeft;
 
-	public Drone(int droneX, int droneY) 
+	public Drone(int droneX, int droneY) throws IOException 
 	{
 		this.droneX = droneX;
 		this.droneY = droneY;
 
-		ImageIcon i = new ImageIcon("pics\\drone2.png");
-		image = i.getImage();
-		this.setPreferredSize(new Dimension(1, 1));
-//		this.setBounds(0, 0, 0, 0);
+		this.width = 100;
+		this.height = 80;
+
+		image = ImageIO.read(new File("pics\\drone2.png"));
 
 		addKeyListener(this);
 
 		int delay = 10;
 		tUp = new Timer(delay, event -> {
-			changeY(-10);
+			if (!isTouchingTop())
+				changeY(-10);
 			repaint();
 		});
 		tDown = new Timer(delay, event -> {
-			changeY(10);
+			if (!isTouchingBottom())
+				changeY(10);
 			repaint();
 		});
 		tRight = new Timer(delay, event -> {
-			changeX(10);
+			if (!isTouchingRight())
+				changeX(10);
 			repaint();
 		});
 		tLeft = new Timer(delay, event -> {
-			changeX(-10);
+			if (!isTouchingLeft())
+				changeX(-10);
 			repaint();
 		});
 	}
-	
+
 
 	public void addNotify() 
 	{
@@ -47,59 +57,69 @@ public class Drone extends JLabel implements KeyListener
 		requestFocus();
 	}
 
-	public void paintComponent(Graphics g) 
+	public boolean isTouchingTop() 
 	{
-	//	Graphics2D g2 = (Graphics2D)g;
-		((Graphics2D)g).drawImage(image, droneX, droneY, 100, 80, this);
+		if (droneY <= 0)
+			return true;
+		return false;
+	}
+
+	public boolean isTouchingBottom() 
+	{
+		if (droneY + height >= DroneGame.GAME_HEIGHT - 40) // -40 offset
+			return true;
+		return false;
+	}
+
+	public boolean isTouchingRight() 
+	{
+		if (droneX + width >= DroneGame.GAME_WIDTH - 20) // -20 offset
+			return true;
+		return false;
+	}
+
+	public boolean isTouchingLeft() 
+	{
+		if (droneX <= 0)
+			return true;
+		return false;
+	}
+
+	public void paint(Graphics g) 
+	{
+		Graphics2D g2 = (Graphics2D)g;
+		g2.drawImage(image, null, droneX, droneY);
+		bounding = new Rectangle(droneX, droneY, width, height);
+		g2.draw(bounding);
 	}
 
 	public void keyPressed(KeyEvent e) 
 	{ 
 		if (e.getKeyCode() == KeyEvent.VK_UP)
-		{
 			tUp.start();
-		}
 		if (e.getKeyCode() == KeyEvent.VK_DOWN)
-		{
 			tDown.start();
-		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-		{
 			tRight.start();
-		}
 		if (e.getKeyCode() == KeyEvent.VK_LEFT)
-		{
 			tLeft.start();
-		}
-
 	}
 
 	public void keyReleased(KeyEvent e) 
 	{ 
 		if (e.getKeyCode() == KeyEvent.VK_UP)
-		{
 			tUp.stop();
-		}
 		if (e.getKeyCode() == KeyEvent.VK_DOWN)
-		{
 			tDown.stop();
-		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-		{
 			tRight.stop();
-		}
 		if (e.getKeyCode() == KeyEvent.VK_LEFT)
-		{
 			tLeft.stop();
-		}
 	}
 
-	public void keyTyped(KeyEvent e) 
-	{
+	public void keyTyped(KeyEvent e) {}
 
-	}
-
-	public int getDroneY()
+	public int getDroneY() 
 	{
 		return droneY;
 	}
@@ -109,14 +129,14 @@ public class Drone extends JLabel implements KeyListener
 		return droneX;
 	}
 
-	public void moveRight()
+	public int getWidth()
 	{
-		int delay = 10;
-		Timer t = new Timer(delay, event -> {
-			changeX(1);
-			repaint();
-		});
-		t.start();
+		return width;
+	}
+
+	public int getHeight()
+	{
+		return height;
 	}
 
 	public void changeX(int lateral)
