@@ -13,6 +13,7 @@ public class Drone extends JLabel implements KeyListener
     private Airplane emeny;
     private boolean collision;
     public Rectangle bounding;
+    private Timer tUp, tDown, tRight, tLeft;
     
     public Drone(int x, int y) 
     {
@@ -21,7 +22,7 @@ public class Drone extends JLabel implements KeyListener
     	//emeny = new Airplane(100, 100, 150, 25);
     	collision = false;
     	
-    	ImageIcon i = new ImageIcon("drone2.png");
+    	ImageIcon i = new ImageIcon("pics\\drone2.png");
     	image = i.getImage();
     	height = 80;//image.getHeight(null);
     	width = 100;//image.getWidth(null);
@@ -33,6 +34,36 @@ public class Drone extends JLabel implements KeyListener
     	//this.setBounds(new Rectangle(x, y, width, height));
         this.setPreferredSize(new Dimension(0, 0));
         addKeyListener(this);
+        
+		int delay = 10;
+		
+	    Timer t = new Timer(delay * 10, event -> {
+	    	if (!isTouchingRight()) 
+	    		changeX(1);
+	    	repaint();
+	    });
+	    t.start();
+		
+		tUp = new Timer(delay, event -> {
+			if (!isTouchingTop())
+				changeY(-10);
+			repaint();
+		});
+		tDown = new Timer(delay, event -> {
+			if (!isTouchingBottom())
+				changeY(10);
+			repaint();
+		});
+		tRight = new Timer(delay, event -> {
+			if (!isTouchingRight())
+				changeX(10);
+			repaint();
+		});
+		tLeft = new Timer(delay, event -> {
+			if (!isTouchingLeft())
+				changeX(-10);
+			repaint();
+		});
     }
 
     public void addNotify() 
@@ -40,6 +71,34 @@ public class Drone extends JLabel implements KeyListener
         super.addNotify();
         requestFocus();
     }
+    
+    public boolean isTouchingTop() 
+	{
+		if (y <= 0)
+			return true;
+		return false;
+	}
+
+	public boolean isTouchingBottom() 
+	{
+		if (y + height >= DroneGame.GAME_HEIGHT - 40) // -40 offset
+			return true;
+		return false;
+	}
+
+	public boolean isTouchingRight() 
+	{
+		if (x + width >= DroneGame.GAME_WIDTH - 20) // -20 offset
+			return true;
+		return false;
+	}
+
+	public boolean isTouchingLeft() 
+	{
+		if (x <= 0)
+			return true;
+		return false;
+	}
 
     public void paintComponent(Graphics g) 
     {
@@ -57,87 +116,38 @@ public class Drone extends JLabel implements KeyListener
     	y = 150;
     }
     
-    public void keyPressed(KeyEvent e) 
-    { 
-    	if(e.getKeyCode() == KeyEvent.VK_UP)
-        {
-        	changeY(-10);
-        	changeYD(-10);
-        	if(y <= 0)
-        	{
-        		y = 0;
-        	}
-        	if(yd <= 80)
-        	{
-        		yd = 80;
-        	}
-        	repaint();
-        }
-        if(e.getKeyCode() == KeyEvent.VK_DOWN)
-        {
-        	changeY(10);
-        	changeYD(10);
-        	if(y >= 375)
-        	{
-        		y = 375;
-        	}
-        	if(yd >= 435)
-        	{
-        		yd = 435;
-        	}
-        	repaint();
-        }
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT)
-        {
-        	changeX(10);
-        	changeXD(10);
-        	if(x >= 875)
-        	{
-        		x = 875;
-        	}
-        	if(xd >= 975)
-        	{
-        		xd = 975;
-        	}
-        	repaint();
-        }
-        if(e.getKeyCode() == KeyEvent.VK_LEFT)
-        {
-        	changeX(-10);
-        	changeXD(-10);
-        	if(x <= 0)
-        	{
-        		x = 0;
-        	}
-        	if(xd <= 100)
-        	{
-        		xd = 100;
-        	}
-        	repaint();
-        }
-        if(e.getKeyCode() == KeyEvent.VK_R)
-        {
-        	reset();
-        }
-        
-    }
-    
-    public void keyReleased(KeyEvent e) 
-    { 
-    	
-    }
-    
-    public void keyTyped(KeyEvent e) 
-    {
-    	
-    }
+	public void keyPressed(KeyEvent e) 
+	{ 
+		if (e.getKeyCode() == KeyEvent.VK_UP)
+			tUp.start();
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+			tDown.start();
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+			tRight.start();
+		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+			tLeft.start();
+	}
 
-    public int getY()
+	public void keyReleased(KeyEvent e) 
+	{ 
+		if (e.getKeyCode() == KeyEvent.VK_UP)
+			tUp.stop();
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+			tDown.stop();
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+			tRight.stop();
+		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+			tLeft.stop();
+	}
+    
+    public void keyTyped(KeyEvent e) {}
+
+    public int getYs()
     {
     	return y;
     }
     
-    public int getX()
+    public int getXs()
     {
     	return x;
     }

@@ -29,10 +29,10 @@ public class DroneGame
 
 		f15 = new Airplane(850, r.nextInt(450), 150, 25);
 		JLabel airplane = new JLabel(f15);
-		airplane.setBounds(850, r.nextInt(450), 150, 25);
+		airplane.setBounds(0, 0, 1, 1);
 		tomcat = new Airplane(800, r.nextInt(450), 150, 25);
 		JLabel airplane2 = new JLabel(tomcat);
-		airplane2.setBounds(850, r.nextInt(450), 150, 25);
+		airplane2.setBounds(0, 0, 1, 1);
 		Time time = new Time();
 		Scores score = new Scores();
 
