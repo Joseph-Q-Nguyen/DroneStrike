@@ -88,7 +88,7 @@ public class DroneGame
 				{
 					airforce[i].reset();
 					drone.resetLaser();
-					playHitSound();
+					playGenericSound("Files\\smb_bump.wav");
 				}
 			}
 			
@@ -115,6 +115,10 @@ public class DroneGame
 				airforce[3].setX(16000);
 				playScoreSound(); 
 				score.reset();
+			}
+			if (drone.firstShot())
+			{
+				playGenericSound("Files\\smb_fireball.wav");
 			}
 		}
 	}
