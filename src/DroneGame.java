@@ -35,10 +35,10 @@ public class DroneGame
 		tomcat = new Airplane(1050, r.nextInt(450), 150, 25);
 		JLabel airplane2 = new JLabel(tomcat);
 		airplane2.setBounds(0, 0, 1, 1);
-		dog = new Airplane(10000, r.nextInt(450), 150, 25);
+		dog = new Airplane(8750, r.nextInt(450), 150, 25);
 		JLabel airplane3 = new JLabel(dog);
 		airplane3.setBounds(0, 0, 1, 1);
-		topgun = new Airplane(20000, r.nextInt(450), 150, 25);
+		topgun = new Airplane(16000, r.nextInt(450), 150, 25);
 		JLabel airplane4 = new JLabel(topgun);
 		airplane4.setBounds(0, 0, 1, 1);
 		
@@ -99,8 +99,8 @@ public class DroneGame
 				score.gameOver();
 				for(int i = 0; i < 4; i++)
 					airforce[i].reset();
-				airforce[2].setX(10000);
-				airforce[3].setX(20000);
+				airforce[2].setX(8750);
+				airforce[3].setX(16000);
 				playGenericSound("Files\\smb_bowserfalls.wav");
 			}
 			
@@ -111,8 +111,8 @@ public class DroneGame
 				drone.reset();
 				for(int i = 0; i < 4; i++)
 					airforce[i].reset();
-				airforce[2].setX(10000);
-				airforce[3].setX(20000);
+				airforce[2].setX(8750);
+				airforce[3].setX(16000);
 				playScoreSound(); 
 				score.reset();
 			}
