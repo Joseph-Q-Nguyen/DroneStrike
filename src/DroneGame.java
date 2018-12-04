@@ -76,24 +76,6 @@ public class DroneGame
 				
 			}
 			
-			/*if(crashF())
-			{
-				lives.lost();
-				drone.reset();
-				f15.reset();
-			}
-			if(crashT())
-			{
-				lives.lost();
-				drone.reset();
-				tomcat.reset();
-			}
-			if(crashD())
-			{
-				lives.lost();
-				drone.reset();
-				dog.reset();
-			}*/
 			if(lives.getLives() == 0)
 			{
 				lives.getALife();
@@ -119,59 +101,8 @@ public class DroneGame
 		}
 	}
 
-	public boolean crashF() 
-	{
-		//bottom of plane
-		if (f15.getY()+20 < drone.getYs()-drone.getHeight()
-				|| f15.getY()-f15.getIconHeight()-50 > drone.getYs()) {
-			//top of plane
-			return false;
-		}
-		//back of plane
-		if (f15.getX()+f15.getIconWidth()-50 < drone.getXs()-drone.getHeight() 
-				|| f15.getX()-f15.getIconHeight() > drone.getXs()+drone.getWidth()) 
-		{
-			return false;
-		}
-		return true;
-	}
 
-	public boolean crashT()
-	{
-		if (tomcat.getY()+20 < drone.getYs()-drone.getHeight()
-				|| tomcat.getY()-tomcat.getIconHeight()-50 > drone.getYs()) {
-			//top of plane
-			return false;
-		}
-		//back of plane
-		if (tomcat.getX()+tomcat.getIconWidth()-50 < drone.getXs()-drone.getHeight() 
-				|| tomcat.getX()-tomcat.getIconHeight() > drone.getXs()+drone.getWidth()) {
-			return false;
-		}
-		return true;
-	}
-
-	public boolean crashD()
-	{
-		if (dog.getY()+20 < drone.getYs()-drone.getHeight()
-				|| dog.getY()-dog.getIconHeight()-50 > drone.getYs()) {
-			//top of plane
-			return false;
-		}
-		//back of plane
-		if (dog.getX()+dog.getIconWidth()-50 < drone.getXs()-drone.getHeight() 
-				|| dog.getX()-dog.getIconHeight() > drone.getXs()+drone.getWidth()) {
-			return false;
-		}
-		return true;
-	}
 	
-	public void detection()
-	{
-		System.out.print("X:" + drone.getX() + " ");
-		System.out.println("Y: " + drone.getY());
-	}
-
 	public static void main(String[] args) throws IOException, InterruptedException
 	{
 		DroneGame MegaDimensionNeptuniaVII = new DroneGame();
