@@ -16,25 +16,36 @@ public class DroneGame
 	private Random r;
 	
 	private Drone drone;
-	private Airplane f15, tomcat;
-
+	private Airplane f15, tomcat, dog;
+	
+	private Airplane[] airforce = new Airplane[6];
+	
 	public DroneGame() throws IOException, InterruptedException
-	{	
+	{
 		JFrame screen = new JFrame("Drone Strike");
 		MovingPlain plainBackground = new MovingPlain();
 		r = new Random();
 		Lives lives = new Lives();
 
+		drone = new Drone(50, 150);
+		
 		f15 = new Airplane(850, r.nextInt(450), 150, 25);
 		JLabel airplane = new JLabel(f15);
 		airplane.setBounds(0, 0, 1, 1);
 		tomcat = new Airplane(800, r.nextInt(450), 150, 25);
 		JLabel airplane2 = new JLabel(tomcat);
 		airplane2.setBounds(0, 0, 1, 1);
+		
+		
+		
+		airforce[0] = f15;
+		airforce[1] = tomcat;
+		//airforce[2] = airplane3;
+		
 		Time time = new Time();
 		Scores score = new Scores();
 
-		drone = new Drone(50, 150);
+		
 
 		screen.add(plainBackground);
 		playSound();
@@ -50,38 +61,34 @@ public class DroneGame
 		plainBackground.add(airplane2);
 		plainBackground.setLayout(null);
 
-
-
 		
-
 		screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		screen.setSize(GAME_WIDTH , GAME_HEIGHT);
 		screen.setVisible(true);
-		
 
 		while(screen.isVisible()) 
 		{
 			System.out.println("");
-			if(crashF())
+			for(int i = 0; i < 2; i++)
 			{
-				playHitSound();
-				lives.lost();
-				drone.reset();
-				f15.reset();
+				if(airforce[i].crashF(drone))
+				{
+					playHitSound();
+					lives.lost();
+					drone.reset();
+					airforce[i].reset();
+				}
+				
+				
 			}
-			if(crashT())
-			{
-				playHitSound();
-				lives.lost();
-				drone.reset();
-				tomcat.reset();
-			}
+			
 			if(lives.getLives() == 0)
 			{
 				lives.getALife();
 				time.timeReset();
 				score.gameOver();
 			}
+			
 			if(score.getWinner())
 			{
 				lives.won();
@@ -91,41 +98,6 @@ public class DroneGame
 				
 			}
 		}
-	}
-
-	public boolean crashF() {
-		//bottom of plane
-		if (f15.getY()+20 < drone.getYs()-drone.getHeight()
-				|| f15.getY()-f15.getIconHeight()-50 > drone.getYs()) {
-			//top of plane
-			return false;
-		}
-		//back of plane
-		if (f15.getX()+f15.getIconWidth()-50 < drone.getXs()-drone.getHeight() 
-				|| f15.getX()-f15.getIconHeight() > drone.getXs()+drone.getWidth()) {
-			return false;
-		}
-		return true;
-	}
-
-	public boolean crashT()
-	{
-		if (tomcat.getY()+20 < drone.getYs()-drone.getHeight()
-				|| tomcat.getY()-tomcat.getIconHeight()-50 > drone.getYs()) {
-			//top of plane
-			return false;
-		}
-		//back of plane
-		if (tomcat.getX()+tomcat.getIconWidth()-50 < drone.getXs()-drone.getHeight() 
-				|| tomcat.getX()-tomcat.getIconHeight() > drone.getXs()+drone.getWidth()) {
-			return false;
-		}
-		return true;
-	}
-
-	public static void main(String[] args) throws IOException, InterruptedException
-	{
-		DroneGame MegaDimensionNeptuniaVII = new DroneGame();
 	}
 	
 	public void playHitSound() {
@@ -152,6 +124,14 @@ public class DroneGame
 	        System.out.println("Error with playing sound.");
 	        ex.printStackTrace();
 	    }
+	}
+
+
+	
+	public static void main(String[] args) throws IOException, InterruptedException
+	{
+		DroneGame MegaDimensionNeptuniaVII = new DroneGame();
+		//System.out.println(drone.getWidth());
 	}
 
 }
