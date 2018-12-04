@@ -1,10 +1,5 @@
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
 import javax.swing.*;
 
 
@@ -76,6 +71,7 @@ public class DroneGame
 			if(lives.getLives() == 0)
 			{
 				lives.getALife();
+				time.timeReset();
 				score.gameOver();
 			}
 			if(score.getWinner())
