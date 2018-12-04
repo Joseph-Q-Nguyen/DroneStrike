@@ -1,166 +1,195 @@
-import java.io.File;
-import java.io.IOException;
-import java.util.Random;
 import javax.swing.*;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-
-// Joseph's note: anything added to be displayed on screen must be added to the Moving Plain
-public class DroneGame 
+public class Drone extends JLabel implements KeyListener 
 {
-	public final static int GAME_WIDTH = 1000;
-	public final static int GAME_HEIGHT = 525;
+    
+    private Image image;
+    public int x, y, height, width;
+    private Laser laser;
+    
+   // public Rectangle bounding;
+    private Timer tUp, tDown, tRight, tLeft;
+    
+    public Drone(int x, int y) 
+    {
+    	this.x = x;
+    	this.y = y;
+    	
+    	ImageIcon i = new ImageIcon("Files\\drone2.png");
+    	image = i.getImage();
+    	height = 80;
+    	width = 100;
+    	
+        this.setPreferredSize(new Dimension(0, 0));
+        addKeyListener(this);
+        
+        laser = new Laser(x + (width / 2), y + (height / 2));
+        
+		int delay = 10;
+		
+	    Timer t = new Timer(delay * 10, event -> {
+	    	if (!isTouchingRight()) 
+	    		changeX(1);
+	    	repaint();
+	    });
+	    t.start();
+		
+		tUp = new Timer(delay, event -> {
+			if (!isTouchingTop())
+				changeY(-10);
+			repaint();
+		});
+		tDown = new Timer(delay, event -> {
+			if (!isTouchingBottom())
+				changeY(10);
+			repaint();
+		});
+		tRight = new Timer(delay, event -> {
+			if (!isTouchingRight())
+				changeX(10);
+			repaint();
+		});
+		tLeft = new Timer(delay, event -> {
+			if (!isTouchingLeft())
+				changeX(-10);
+			repaint();
+		});
+    }
 
-	private Random r;
-	
-	private Drone drone;
-	private Airplane f15, tomcat, dog;
-	
-	private Airplane[] airforce = new Airplane[6];
-	
-	public DroneGame() throws IOException, InterruptedException
+    public void addNotify() 
+    {
+        super.addNotify();
+        requestFocus();
+    }
+    
+    public boolean isTouchingTop() 
 	{
-		JFrame screen = new JFrame("Drone Strike");
-		MovingPlain plainBackground = new MovingPlain();
-		r = new Random();
-		Lives lives = new Lives();
-
-		drone = new Drone(50, 150);
-		
-		f15 = new Airplane(850, r.nextInt(450), 150, 25);
-		JLabel airplane = new JLabel(f15);
-		airplane.setBounds(0, 0, 1, 1);
-		tomcat = new Airplane(800, r.nextInt(450), 150, 25);
-		JLabel airplane2 = new JLabel(tomcat);
-		airplane2.setBounds(0, 0, 1, 1);
-		
-		
-		
-		airforce[0] = f15;
-		airforce[1] = tomcat;
-		//airforce[2] = airplane3;
-		
-		Time time = new Time();
-		Scores score = new Scores();
-
-		
-
-		screen.add(plainBackground);
-		playSound();
-
-
-		time.setBounds(500, 390, 75, 75);
-		lives.setBounds(470, 390, 150, 150);
-		plainBackground.add(lives);
-		plainBackground.add(time);
-		plainBackground.add(score);
-		plainBackground.add(drone);
-		plainBackground.add(airplane);
-		plainBackground.add(airplane2);
-		plainBackground.setLayout(null);
-
-		
-		screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		screen.setSize(GAME_WIDTH , GAME_HEIGHT);
-		screen.setVisible(true);
-
-		while(screen.isVisible()) 
-		{
-			System.out.print("");
-			for(int i = 0; i < 2; i++)
-			{
-				if(airforce[i].crashF(drone))
-				{
-					playHitSound();
-					lives.lost();
-					drone.reset();
-					airforce[i].reset();
-				}
-				if (drone.laserHit(airforce[i]))
-				{
-					airforce[i].reset();
-					playHitSound();
-				}
-			}
-			
-			if(lives.getLives() == 0)
-			{
-				lives.getALife();
-				time.timeReset();
-				score.gameOver();
-				playGenericSound("sounds\\smb_bowserfalls.wav");
-			}
-			
-			if(score.getWinner())
-			{
-				lives.won();
-				time.timeReset();
-				drone.reset();
-				for(int i = 0; i < 2; i++)
-					airforce[i].reset();
-				playScoreSound(); 
-				score.reset();
-			}
-		}
-	}
-	
-	public void playHitSound() {
-	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds\\canon.wav").getAbsoluteFile());
-	        Clip clip = AudioSystem.getClip();
-	        clip.open(audioInputStream);
-	        clip.start();
-	    } catch(Exception ex) {
-	        System.out.println("Error with playing sound.");
-	        ex.printStackTrace();
-	    }
-	}
-	
-	public void playScoreSound() {
-	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds\\smb_powerup.wav").getAbsoluteFile());
-	        Clip clip = AudioSystem.getClip();
-	        clip.open(audioInputStream);
-	        clip.start();
-	    } catch(Exception ex) {
-	        System.out.println("Error with playing sound.");
-	        ex.printStackTrace();
-	    }
-	}
-	
-	public void playSound() {
-	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds\\mario.wav").getAbsoluteFile());
-	        Clip clip = AudioSystem.getClip();
-	        clip.open(audioInputStream);
-	        clip.loop(Clip.LOOP_CONTINUOUSLY);
-	        Thread.sleep(500);
-	    } catch(Exception ex) {
-	        System.out.println("Error with playing sound.");
-	        ex.printStackTrace();
-	    }
-	}
-	
-	public void playGenericSound(String path) {
-	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(path).getAbsoluteFile());
-	        Clip clip = AudioSystem.getClip();
-	        clip.open(audioInputStream);
-	        clip.start();
-	    } catch(Exception ex) {
-	        System.out.println("Error with playing sound.");
-	        ex.printStackTrace();
-	    }
+		if (y <= 0)
+			return true;
+		return false;
 	}
 
-
-	
-	public static void main(String[] args) throws IOException, InterruptedException
+	public boolean isTouchingBottom() 
 	{
-		DroneGame MegaDimensionNeptuniaVII = new DroneGame();
-		//System.out.println(drone.getWidth());
+		if (y + height >= DroneGame.GAME_HEIGHT - 40) // -40 offset
+			return true;
+		return false;
 	}
 
+	public boolean isTouchingRight() 
+	{
+		if (x + width >= DroneGame.GAME_WIDTH - 20) // -20 offset
+			return true;
+		return false;
+	}
+
+	public boolean isTouchingLeft() 
+	{
+		if (x <= 0)
+			return true;
+		return false;
+	}
+
+    public void paintComponent(Graphics g) 
+    {
+			Graphics2D g2 = (Graphics2D) g;
+    		laser.paint(g2);
+    		g2.drawImage(image, x, y, width, height, null);
+    }
+
+    public void reset()
+    {
+    	x = 50;
+    	y = 150;
+    	laser.setX(x + (width / 2));
+    	laser.setY(y + (height / 2));
+    	if (!laser.isShooting())
+    		resetLaser();
+    }
+    
+	public void keyPressed(KeyEvent e) 
+	{ 
+		if (e.getKeyCode() == KeyEvent.VK_UP)
+			tUp.start();
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+			tDown.start();
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+			tRight.start();
+		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+			tLeft.start();
+		if (e.getKeyCode() == KeyEvent.VK_SPACE)
+			laser.startMove();
+	}
+
+	public void keyReleased(KeyEvent e) 
+	{ 
+		if (e.getKeyCode() == KeyEvent.VK_UP)
+			tUp.stop();
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+			tDown.stop();
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+			tRight.stop();
+		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+			tLeft.stop();
+	}
+    
+    public void keyTyped(KeyEvent e) {}
+
+    public int getYs()
+    {
+    	return y;
+    }
+    
+    public int getXs()
+    {
+    	return x;
+    }
+    
+    public int getHeight()
+    {
+    	return height;
+    }
+    
+    public int getWidth()
+    {
+    	return width;
+    }
+    
+    public void changeX(int lateral)
+    {
+    	x += lateral;
+    	laser.setX(x + (width / 2));
+    	if (!laser.isShooting())
+    		laser.setXMove(laser.getXMove() + lateral);
+    }
+    
+    public void changeY(int vertical)
+    {
+    	y += vertical;
+    	laser.setY(y + (height / 2));
+    	if (!laser.isShooting())
+    		laser.setYMove(laser.getYMove() + vertical);
+    }   
+    
+    public void resetLaser() {
+    	laser.setX(x + (width / 2));
+    	laser.setXMove(x + (width / 2));
+    	laser.setY(y + (height / 2));
+    	laser.setYMove(y + (height / 2));
+    	laser.stopMove();
+    }
+    
+    public boolean laserHit(Airplane plane) {
+    	int xLeft, xRight, yTop, yBottom;
+    	xLeft = plane.getX();
+    	xRight = xLeft + 150;
+    	yTop = plane.getY();
+    	yBottom = yTop + 100;
+    	if (laser.getXMove() > xLeft && laser.getXMove() < xRight &&laser.getYMove() < yBottom && laser.getYMove() > yTop)
+    		return true;
+    	return false;
+    } 
 }
