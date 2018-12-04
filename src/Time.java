@@ -21,7 +21,7 @@ public class Time extends JLabel {
 			else if(minutes == 1)
 			{
 				minutes--;
-				seconds = 60;
+				seconds = 59;
 			}
 			else
 			{
@@ -42,6 +42,16 @@ public class Time extends JLabel {
 		drawn = true;
 		timer.scheduleAtFixedRate(task, 1000, 1000);
 		this.setHorizontalAlignment(SwingConstants.RIGHT); 
+	}
+	
+	public int getSeconds()
+	{
+		return seconds;
+	}
+	
+	public int getMinutes()
+	{
+		return minutes;
 	}
 	
 	public void timeReset() 
