@@ -19,7 +19,8 @@ public class Airplane extends JLabel implements Icon
 	private int width;
 	private int height;
 	private Random r;
-	private boolean hit;
+	private boolean boss;
+	
 	
 	/**
     Constructs a car item.
@@ -33,9 +34,9 @@ public class Airplane extends JLabel implements Icon
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		this.hit = false;
-		xd = this.x + this.width;
-		yd = this.y + this.height;
+		
+		xd = this.x + 25;
+		yd = this.y + 50;
 		
 		r = new Random();
 		
@@ -52,27 +53,22 @@ public class Airplane extends JLabel implements Icon
 		});
 		t.start();
 		
-		if(hit)
-		{
-			reset();
-		}
+		
 		
 	}
 
 	public void move()
 	{
-		x--;
-		xd--;
+		x-=5;
+		xd-=5;
 	}
 
-	public void setHit()
+	public void seeker(int onYou)
 	{
-		hit = true;
-	}
-	
-	public boolean getHit()
-	{
-		return hit;
+		x--;
+		xd--;
+		y = onYou-80;
+		yd = onYou-80;
 	}
 	
 	//resets the position of the airplane back to the left hand side
@@ -80,6 +76,7 @@ public class Airplane extends JLabel implements Icon
 	{
 		x = 1000;
 		y = r.nextInt(400);
+		yd = y + 40;
 	}
 
 	//gets the x position of the airplane
@@ -95,12 +92,17 @@ public class Airplane extends JLabel implements Icon
 	
 	public int getXD()
 	{
-		return xd+50;
+		return xd+25;
 	}
 	
 	public int getYD()
 	{
-		return yd+850;
+		return yd+50;
+	}
+	
+	public void setYD(int yo)
+	{
+		yd = yo;
 	}
 	
 	//draws the nose of the airplane
@@ -147,8 +149,8 @@ public class Airplane extends JLabel implements Icon
 		drawNose(g2);
 		drawFrontWing(g2);
 		
-		Rectangle2D.Double bounding = new Rectangle2D.Double(x-35, y-10, width+50, height+80);
-		g2.draw(bounding);
+		//Rectangle2D.Double bounding = new Rectangle2D.Double(x-35, y-10, width+50, height+80);
+		//g2.draw(bounding);
 	}
 	
 	@Override
@@ -172,4 +174,22 @@ public class Airplane extends JLabel implements Icon
 		draw(g2);
 		
 	}
+	
+	public boolean crashF(Drone drone) 
+	{
+		//bottom of plane
+		if (this.getY()+20 < drone.getYs()-drone.getHeight()
+				|| this.getY()-this.getIconHeight()-50 > drone.getYs()) {
+			//top of plane
+			return false;
+		}
+		//back of plane
+		if (this.getX()+this.getIconWidth()-50 < drone.getXs()-drone.getHeight() 
+				|| this.getX()-this.getIconHeight() > drone.getXs()+drone.getWidth()) 
+		{
+			return false;
+		}
+		return true;
+	}
+	
 }
