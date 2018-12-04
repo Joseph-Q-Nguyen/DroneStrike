@@ -10,18 +10,23 @@ public class Time extends JLabel {
 	
 	public boolean drawn = false;
 	
-	int seconds = 0;
-	int minutes = 0;
+	int seconds = 30;
+	int minutes = 1;
 	
 	Timer timer = new Timer();
 	TimerTask task = new TimerTask() {
 		public void run() {
-			if(seconds < 59)
-				seconds++;
+			if(seconds > 0)
+				seconds--;
+			else if(minutes == 1)
+			{
+				minutes--;
+				seconds = 60;
+			}
 			else
 			{
+				minutes = 0;
 				seconds = 0;
-				minutes++;
 			}
 			if(seconds < 10 && minutes < 10)
 				label.setText("Time: 0" + Integer.toString(minutes) + ":0" + Integer.toString(seconds));
@@ -37,12 +42,11 @@ public class Time extends JLabel {
 		drawn = true;
 		timer.scheduleAtFixedRate(task, 1000, 1000);
 		this.setHorizontalAlignment(SwingConstants.RIGHT); 
-//		this.setBounds(500, 400, 75, 75);
 	}
 	
 	public void timeReset() 
 	{
-		seconds = 0;
-		minutes = 0;
+		seconds = 30;
+		minutes = 1;
 	}
 }
