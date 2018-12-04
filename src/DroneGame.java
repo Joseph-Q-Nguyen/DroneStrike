@@ -68,7 +68,7 @@ public class DroneGame
 
 		while(screen.isVisible()) 
 		{
-			System.out.println("");
+			System.out.print("");
 			for(int i = 0; i < 2; i++)
 			{
 				if(airforce[i].crashF(drone))
@@ -78,8 +78,11 @@ public class DroneGame
 					drone.reset();
 					airforce[i].reset();
 				}
-				
-				
+				if (drone.laserHit(airforce[i]))
+				{
+					airforce[i].reset();
+					playHitSound();
+				}
 			}
 			
 			if(lives.getLives() == 0)
@@ -87,6 +90,7 @@ public class DroneGame
 				lives.getALife();
 				time.timeReset();
 				score.gameOver();
+				playGenericSound("sounds\\smb_bowserfalls.wav");
 			}
 			
 			if(score.getWinner())
@@ -94,15 +98,17 @@ public class DroneGame
 				lives.won();
 				time.timeReset();
 				drone.reset();
-				f15.reset();
-				
+				for(int i = 0; i < 2; i++)
+					airforce[i].reset();
+				playScoreSound(); 
+				score.reset();
 			}
 		}
 	}
 	
 	public void playHitSound() {
 	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("/Users/adamgolab/Desktop/151project/sounds/canon.wav").getAbsoluteFile());
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds\\canon.wav").getAbsoluteFile());
 	        Clip clip = AudioSystem.getClip();
 	        clip.open(audioInputStream);
 	        clip.start();
@@ -112,14 +118,37 @@ public class DroneGame
 	    }
 	}
 	
+	public void playScoreSound() {
+	    try {
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds\\smb_powerup.wav").getAbsoluteFile());
+	        Clip clip = AudioSystem.getClip();
+	        clip.open(audioInputStream);
+	        clip.start();
+	    } catch(Exception ex) {
+	        System.out.println("Error with playing sound.");
+	        ex.printStackTrace();
+	    }
+	}
 	
 	public void playSound() {
 	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("/Users/adamgolab/Desktop/151project/sounds/mario.wav").getAbsoluteFile());
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds\\mario.wav").getAbsoluteFile());
 	        Clip clip = AudioSystem.getClip();
 	        clip.open(audioInputStream);
 	        clip.loop(Clip.LOOP_CONTINUOUSLY);
 	        Thread.sleep(500);
+	    } catch(Exception ex) {
+	        System.out.println("Error with playing sound.");
+	        ex.printStackTrace();
+	    }
+	}
+	
+	public void playGenericSound(String path) {
+	    try {
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(path).getAbsoluteFile());
+	        Clip clip = AudioSystem.getClip();
+	        clip.open(audioInputStream);
+	        clip.start();
 	    } catch(Exception ex) {
 	        System.out.println("Error with playing sound.");
 	        ex.printStackTrace();

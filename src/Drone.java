@@ -2,38 +2,31 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
 
 public class Drone extends JLabel implements KeyListener 
 {
     
     private Image image;
-    public int x, y, height, width, xd, yd;
-    private Airplane emeny;
-    private boolean collision;
-    public Rectangle bounding;
+    public int x, y, height, width;
+    private Laser laser;
+    
+   // public Rectangle bounding;
     private Timer tUp, tDown, tRight, tLeft;
     
     public Drone(int x, int y) 
     {
     	this.x = x;
     	this.y = y;
-    	//emeny = new Airplane(100, 100, 150, 25);
-    	collision = false;
     	
     	ImageIcon i = new ImageIcon("pics\\drone2.png");
     	image = i.getImage();
-    	height = 80;//image.getHeight(null);
-    	width = 100;//image.getWidth(null);
+    	height = 80;
+    	width = 100;
     	
-    	xd = x + width;
-    	yd = y + height;
-    	
-    	
-    	//this.setBounds(new Rectangle(x, y, width, height));
         this.setPreferredSize(new Dimension(0, 0));
         addKeyListener(this);
+        
+        laser = new Laser(x + (width / 2), y + (height / 2));
         
 		int delay = 10;
 		
@@ -102,18 +95,19 @@ public class Drone extends JLabel implements KeyListener
 
     public void paintComponent(Graphics g) 
     {
-    		g.drawImage(image, x, y, width, height, null);
-    		
-    		bounding = new Rectangle(x, y, width, height);
-    		Graphics2D g2 = (Graphics2D) g;
-    		g2.draw(bounding);
-    		//repaint();
+			Graphics2D g2 = (Graphics2D) g;
+    		laser.paint(g2);
+    		g2.drawImage(image, x, y, width, height, null);
     }
 
     public void reset()
     {
     	x = 50;
     	y = 150;
+    	laser.setX(x + (width / 2));
+    	laser.setY(y + (height / 2));
+    	if (!laser.isShooting())
+    		resetLaser();
     }
     
 	public void keyPressed(KeyEvent e) 
@@ -126,6 +120,8 @@ public class Drone extends JLabel implements KeyListener
 			tRight.start();
 		if (e.getKeyCode() == KeyEvent.VK_LEFT)
 			tLeft.start();
+		if (e.getKeyCode() == KeyEvent.VK_SPACE)
+			laser.startMove();
 	}
 
 	public void keyReleased(KeyEvent e) 
@@ -152,16 +148,6 @@ public class Drone extends JLabel implements KeyListener
     	return x;
     }
     
-    public int getYD()
-    {
-    	return yd;
-    }
-    
-    public int getXD()
-    {
-    	return xd;
-    }
-    
     public int getHeight()
     {
     	return height;
@@ -175,33 +161,35 @@ public class Drone extends JLabel implements KeyListener
     public void changeX(int lateral)
     {
     	x += lateral;
+    	laser.setX(x + (width / 2));
+    	if (!laser.isShooting())
+    		laser.setXMove(laser.getXMove() + lateral);
     }
     
     public void changeY(int vertical)
     {
     	y += vertical;
+    	laser.setY(y + (height / 2));
+    	if (!laser.isShooting())
+    		laser.setYMove(laser.getYMove() + vertical);
+    }   
+    
+    public void resetLaser() {
+    	laser.setX(x + (width / 2));
+    	laser.setXMove(x + (width / 2));
+    	laser.setY(y + (height / 2));
+    	laser.setYMove(y + (height / 2));
+    	laser.stopMove();
     }
     
-    public void changeYD(int crossY)
-    {
-    	yd += crossY;
-    }
-    
-    public void changeXD(int crossX)
-    {
-    	xd += crossX;
-    }
-    
-    public boolean getCollision()
-    {
-    	return collision;
-    }
-    
-    public void setCollision(boolean c)
-    {
-    	collision = c;
-    }
-    
-    
-    
+    public boolean laserHit(Airplane plane) {
+    	int xLeft, xRight, yTop, yBottom;
+    	xLeft = plane.getX();
+    	xRight = xLeft + 150;
+    	yTop = plane.getY();
+    	yBottom = yTop + 100;
+    	if (laser.getXMove() > xLeft && laser.getXMove() < xRight &&laser.getYMove() < yBottom && laser.getYMove() > yTop)
+    		return true;
+    	return false;
+    } 
 }

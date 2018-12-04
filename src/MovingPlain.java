@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-// Joseph
 public class MovingPlain extends JPanel {
 	private Cloud[] 		clouds;
 	private Sky 			sky, skyFlipped;	

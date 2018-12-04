@@ -42,7 +42,7 @@ public class Scores extends JLabel {
 	
 	public void reset()
 	{		
-		
+		winner = false;
 	}
 	
 	public boolean getWinner()
