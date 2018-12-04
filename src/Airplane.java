@@ -19,7 +19,7 @@ public class Airplane extends JLabel implements Icon
 	private int width;
 	private int height;
 	private Random r;
-	
+	private boolean boss;
 	
 	
 	/**
@@ -63,15 +63,27 @@ public class Airplane extends JLabel implements Icon
 		xd-=5;
 	}
 
+	public void seeker(int onYou)
+	{
+		x--;
+		xd--;
+		y = onYou-80;
+		yd = onYou-80;
+	}
 	
 	//resets the position of the airplane back to the left hand side
 	public void reset()
 	{
 		x = 1000;
-		y = r.nextInt(400);
+		y = r.nextInt(450);
 		yd = y + 40;
 	}
 
+	public void setX(int back)
+	{
+		x = back;
+	}
+	
 	//gets the x position of the airplane
 	public int getX()
 	{

@@ -16,7 +16,7 @@ public class DroneGame
 	private Random r;
 	
 	private Drone drone;
-	private Airplane f15, tomcat, dog;
+	private Airplane f15, tomcat, dog, topgun;
 	
 	private Airplane[] airforce = new Airplane[6];
 	
@@ -29,19 +29,23 @@ public class DroneGame
 
 		drone = new Drone(50, 150);
 		
-		f15 = new Airplane(850, r.nextInt(450), 150, 25);
+		f15 = new Airplane(1000, r.nextInt(450), 150, 25);
 		JLabel airplane = new JLabel(f15);
 		airplane.setBounds(0, 0, 1, 1);
-		tomcat = new Airplane(800, r.nextInt(450), 150, 25);
+		tomcat = new Airplane(1050, r.nextInt(450), 150, 25);
 		JLabel airplane2 = new JLabel(tomcat);
 		airplane2.setBounds(0, 0, 1, 1);
-		
-		
+		dog = new Airplane(10000, r.nextInt(450), 150, 25);
+		JLabel airplane3 = new JLabel(dog);
+		airplane3.setBounds(0, 0, 1, 1);
+		topgun = new Airplane(20000, r.nextInt(450), 150, 25);
+		JLabel airplane4 = new JLabel(topgun);
+		airplane4.setBounds(0, 0, 1, 1);
 		
 		airforce[0] = f15;
 		airforce[1] = tomcat;
-		//airforce[2] = airplane3;
-		
+		airforce[2] = dog;
+		airforce[3] = topgun;
 		Time time = new Time();
 		Scores score = new Scores();
 
@@ -59,6 +63,8 @@ public class DroneGame
 		plainBackground.add(drone);
 		plainBackground.add(airplane);
 		plainBackground.add(airplane2);
+		plainBackground.add(airplane3);
+		plainBackground.add(airplane4);
 		plainBackground.setLayout(null);
 
 		
@@ -69,7 +75,7 @@ public class DroneGame
 		while(screen.isVisible()) 
 		{
 			System.out.print("");
-			for(int i = 0; i < 2; i++)
+			for(int i = 0; i < 4; i++)
 			{
 				if(airforce[i].crashF(drone))
 				{
@@ -81,7 +87,8 @@ public class DroneGame
 				if (drone.laserHit(airforce[i]))
 				{
 					airforce[i].reset();
-					playGenericSound("sounds\\smb_bump.wav");
+					drone.resetLaser();
+					playHitSound();
 				}
 			}
 			
@@ -90,7 +97,11 @@ public class DroneGame
 				lives.getALife();
 				time.timeReset();
 				score.gameOver();
-				playGenericSound("sounds\\smb_bowserfalls.wav");
+				for(int i = 0; i < 4; i++)
+					airforce[i].reset();
+				airforce[2].setX(10000);
+				airforce[3].setX(20000);
+				playGenericSound("Files\\smb_bowserfalls.wav");
 			}
 			
 			if(score.getWinner())
@@ -98,19 +109,19 @@ public class DroneGame
 				lives.won();
 				time.timeReset();
 				drone.reset();
-				for(int i = 0; i < 2; i++)
+				for(int i = 0; i < 4; i++)
 					airforce[i].reset();
+				airforce[2].setX(10000);
+				airforce[3].setX(20000);
 				playScoreSound(); 
 				score.reset();
 			}
-			if (drone.firstShot())
-				playGenericSound("sounds\\smb_fireball.wav");
 		}
 	}
 	
 	public void playHitSound() {
 	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds\\canon.wav").getAbsoluteFile());
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("Files\\canon.wav").getAbsoluteFile());
 	        Clip clip = AudioSystem.getClip();
 	        clip.open(audioInputStream);
 	        clip.start();
@@ -122,7 +133,7 @@ public class DroneGame
 	
 	public void playScoreSound() {
 	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds\\smb_powerup.wav").getAbsoluteFile());
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("Files\\smb_powerup.wav").getAbsoluteFile());
 	        Clip clip = AudioSystem.getClip();
 	        clip.open(audioInputStream);
 	        clip.start();
@@ -134,7 +145,7 @@ public class DroneGame
 	
 	public void playSound() {
 	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds\\mario.wav").getAbsoluteFile());
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("Files\\mario.wav").getAbsoluteFile());
 	        Clip clip = AudioSystem.getClip();
 	        clip.open(audioInputStream);
 	        clip.loop(Clip.LOOP_CONTINUOUSLY);
