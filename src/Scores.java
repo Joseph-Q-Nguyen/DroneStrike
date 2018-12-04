@@ -5,6 +5,11 @@ import javax.swing.JLabel;
 
 public class Scores extends JLabel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	JLabel label = this;
 	
 	int seconds = 0;
@@ -43,6 +48,7 @@ public class Scores extends JLabel {
 	public void reset()
 	{		
 		winner = false;
+		seconds = 0;
 	}
 	
 	public boolean getWinner()
@@ -54,5 +60,6 @@ public class Scores extends JLabel {
 	{
 		gamesPlayed++;
 		label.setText("Score: " + gamesWon + " out of " + gamesPlayed);
+		seconds = 0;
 	}
 }
