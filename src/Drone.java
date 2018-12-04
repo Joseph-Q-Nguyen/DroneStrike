@@ -9,6 +9,7 @@ public class Drone extends JLabel implements KeyListener
     private Image image;
     public int x, y, height, width;
     private Laser laser;
+    private boolean firstShot;
     
    // public Rectangle bounding;
     private Timer tUp, tDown, tRight, tLeft;
@@ -22,11 +23,12 @@ public class Drone extends JLabel implements KeyListener
     	image = i.getImage();
     	height = 80;
     	width = 100;
-    	
+        laser = new Laser(x + (width / 2), y + (height / 2));
+        firstShot = false;
+        
+
         this.setPreferredSize(new Dimension(0, 0));
         addKeyListener(this);
-        
-        laser = new Laser(x + (width / 2), y + (height / 2));
         
 		int delay = 10;
 		
@@ -120,8 +122,12 @@ public class Drone extends JLabel implements KeyListener
 			tRight.start();
 		if (e.getKeyCode() == KeyEvent.VK_LEFT)
 			tLeft.start();
-		if (e.getKeyCode() == KeyEvent.VK_SPACE)
-			laser.startMove();
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+			if (!laser.isShooting())
+				firstShot = true;
+			laser.startMove();	
+			firstShot = false;
+		}
 	}
 
 	public void keyReleased(KeyEvent e) 
@@ -188,8 +194,14 @@ public class Drone extends JLabel implements KeyListener
     	xRight = xLeft + 150;
     	yTop = plane.getY();
     	yBottom = yTop + 100;
-    	if (laser.getXMove() > xLeft && laser.getXMove() < xRight &&laser.getYMove() < yBottom && laser.getYMove() > yTop)
+    	if (laser.getXMove() > xLeft && laser.getXMove() < xRight &&laser.getYMove() < yBottom && laser.getYMove() > yTop) {
+    		resetLaser();
     		return true;
+    	}
     	return false;
     } 
+    
+    public boolean firstShot() {
+    	return firstShot;
+    }
 }
