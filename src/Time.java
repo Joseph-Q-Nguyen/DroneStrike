@@ -39,4 +39,10 @@ public class Time extends JLabel {
 		this.setHorizontalAlignment(SwingConstants.RIGHT); 
 //		this.setBounds(500, 400, 75, 75);
 	}
+	
+	public void timeReset() 
+	{
+		seconds = 0;
+		minutes = 0;
+	}
 }
