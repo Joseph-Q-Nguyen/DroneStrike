@@ -88,7 +88,7 @@ public class DroneGame
 				{
 					airforce[i].reset();
 					drone.resetLaser();
-					playGenericSound("Files\\smb_bump.wav");
+					playGenericSound("sounds/smb_bump.wav");
 				}
 			}
 			
