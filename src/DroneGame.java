@@ -101,7 +101,7 @@ public class DroneGame
 					airforce[i].reset();
 				airforce[2].setX(8750);
 				airforce[3].setX(16000);
-				playGenericSound("Files\\smb_bowserfalls.wav");
+				playGenericSound("sounds/smb_bowserfalls.wav");
 			}
 			
 			if(score.getWinner())
@@ -118,14 +118,14 @@ public class DroneGame
 			}
 			if (drone.firstShot())
 			{
-				playGenericSound("Files\\smb_fireball.wav");
+				playGenericSound("sounds/smb_fireball.wav");
 			}
 		}
 	}
 	
 	public void playHitSound() {
 	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("Files\\canon.wav").getAbsoluteFile());
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/canon.wav").getAbsoluteFile());
 	        Clip clip = AudioSystem.getClip();
 	        clip.open(audioInputStream);
 	        clip.start();
@@ -137,7 +137,7 @@ public class DroneGame
 	
 	public void playScoreSound() {
 	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("Files\\smb_powerup.wav").getAbsoluteFile());
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/smb_powerup.wav").getAbsoluteFile());
 	        Clip clip = AudioSystem.getClip();
 	        clip.open(audioInputStream);
 	        clip.start();
@@ -149,7 +149,7 @@ public class DroneGame
 	
 	public void playSound() {
 	    try {
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("Files\\mario.wav").getAbsoluteFile());
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("sounds/mario.wav").getAbsoluteFile());
 	        Clip clip = AudioSystem.getClip();
 	        clip.open(audioInputStream);
 	        clip.loop(Clip.LOOP_CONTINUOUSLY);
