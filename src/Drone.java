@@ -19,7 +19,7 @@ public class Drone extends JLabel implements KeyListener
     	this.x = x;
     	this.y = y;
     	
-    	ImageIcon i = new ImageIcon("pics/drone2.png");
+    	ImageIcon i = new ImageIcon("pictures/drone2.png");
     	image = i.getImage();
     	height = 80;
     	width = 100;
