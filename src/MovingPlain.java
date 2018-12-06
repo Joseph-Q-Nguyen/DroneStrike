@@ -23,12 +23,12 @@ public class MovingPlain extends JPanel {
 	public MovingPlain() throws IOException {
 		gen = 			new Random();
 		clouds = 		new Cloud[3];
-		sky = 			new Sky(0, "pics\\SimpleSky2.png");
-		skyFlipped = 	new Sky(DroneGame.GAME_WIDTH, "pics\\SimpleSky2_flipped.png");
+		sky = 			new Sky(0, "pictures/SimpleSky2.png");
+		skyFlipped = 	new Sky(DroneGame.GAME_WIDTH, "pictures/SimpleSky2_flipped.png");
 		
-		clouds[0] = new Cloud(DroneGame.GAME_WIDTH - 100, 0, 55, 20, "pics\\cloud.png");
-		clouds[1] = new Cloud(DroneGame.GAME_WIDTH - 100, 100, 300, 100, "pics\\cloud.png");
-		clouds[2] = new Cloud(DroneGame.GAME_WIDTH - 100, 200, 200, 50, "pics\\cloud.png");
+		clouds[0] = new Cloud(DroneGame.GAME_WIDTH - 100, 0, 55, 20, "pictures/cloud.png");
+		clouds[1] = new Cloud(DroneGame.GAME_WIDTH - 100, 100, 300, 100, "pictures/cloud.png");
+		clouds[2] = new Cloud(DroneGame.GAME_WIDTH - 100, 200, 200, 50, "pictures/cloud.png");
 		
 		int delay = 10;
 		Timer t = new Timer(delay, event -> {
